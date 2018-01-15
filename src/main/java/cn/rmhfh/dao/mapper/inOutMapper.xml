@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.rmhfh.dao.InOrOutDetailDao">
+	<resultMap type="cn.rmhfh.entity.InDetail" id="inMap">
+		<result column="inId" property="inId"/>
+		<result column="time" property="time"/>
+		<result column="stoveId" property="stoveId"/>
+		<result column="num" property="num"/>
+		<result column="description" property="description"/>
+		<result column="type" property="type"/>
+		<result column="model" property="model"/>
+	</resultMap>
+	
+	<resultMap type="cn.rmhfh.entity.OutDetail" id="outMap">
+		<result column="outId" property="outId"/>
+		<result column="time" property="time"/>
+		<result column="stoveId" property="stoveId"/>
+		<result column="num" property="num"/>
+		<result column="description" property="description"/>
+		<result column="type" property="type"/>
+		<result column="model" property="model"/>
+	</resultMap>
+	
+	<insert id="inDetail">
+		INSERT INTO
+			t_indetail(time,stoveId,num,description)
+		VALUES(#{in.time},#{in.stoveId},#{in.num},#{in.description})	
+	</insert>
+	
+	<insert id="outDetail">
+		INSERT INTO
+			t_outdetail(time,stoveId,num,description)
+		VALUES(#{out.time},#{out.stoveId},#{out.num},#{out.description})	
+	</insert>
+	
+	<select id="getAllIn" resultMap="inMap">
+		SELECT
+			i.*,s.type,s.model
+		FROM
+			t_indetail AS i 
+		LEFT JOIN
+			t_stove AS s
+		ON
+			i.stoveId=s.stoveId	 	
+	</select>
+	
+	<select id="getAllOut" resultMap="outMap">
+		SELECT
+			o.*,s.type,s.model
+		FROM
+			t_outdetail AS o 
+		LEFT JOIN
+			t_stove AS s
+		ON
+			o.stoveId=s.stoveId	 	
+	</select>
+	
+</mapper>    

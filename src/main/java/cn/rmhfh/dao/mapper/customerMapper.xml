@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.rmhfh.dao.CustomerDao">
+	
+
+	<resultMap type="cn.rmhfh.entity.Customer" id="customerMap">
+		<id property="customerId" column="customerId"/>
+		<result property="name" column="name"/>
+		<result property="address" column="address"/>
+		<result property="description" column="description"/>
+	</resultMap>
+	
+	<insert id="addCustomer">
+		INSERT INTO
+			t_customer(customerId,name,address,description)
+		VALUE
+			(#{c.customerId},#{c.name},#{c.address},#{c.description})	
+	</insert>
+	
+	<update id="updateCustomer">
+		UPDATE
+			t_customer
+		SET
+			name=#{c.name},
+			address=#{c.address},
+			description=#{c.description}
+		WHERE
+			customerId=#{c.customerId}	
+	</update>
+	
+	<select id="getAll" resultMap="customerMap">
+		SELECT
+			*
+		FROM
+			t_customer		
+	</select>
+	
+	<select id="findOne" resultMap="customerMap">
+		SELECT
+			*
+		FROM
+			t_customer	
+		WHERE
+			customerId=#{customerId}		
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>    

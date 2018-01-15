@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.rmhfh.dao.MaterialDao">
+	<resultMap type="cn.rmhfh.entity.Material" id="materialMap">
+		<id column="materialId" property="materialId"></id>
+		<result property="name" column="name"/>
+		<result property="unit" column="unit"/>
+		<result property="number" column="number"/>
+		<result property="price" column="price"/>
+		<result property="description" column="description"/>
+	</resultMap>
+	
+	<insert id="addMaterial">
+		INSERT INTO
+			t_material(name,unit,number,price,description)
+		VALUE
+			(#{m.name},#{m.unit},#{m.number},#{m.price},#{m.description})
+	</insert>
+	
+	<select id="findAll" resultMap="materialMap">
+		SELECT
+			*
+		FROM
+			t_material	
+	</select>
+	
+	<update id="updateNum">
+		UPDATE
+			t_material
+		SET
+			number=number+#{number}
+		WHERE
+			materialId=#{id}		
+	</update>
+	
+	<select id="findOne" resultMap="materialMap">
+		SELECT
+			*
+		FROM
+			t_material
+		WHERE
+			materialId=#{id}		
+	</select>
+	
+	<update id="updatePrice">
+		UPDATE
+			t_material
+		SET
+			price=#{price}
+		WHERE
+			materialId=#{id}
+	</update>
+	
+	
+</mapper>    

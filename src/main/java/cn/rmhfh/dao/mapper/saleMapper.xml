@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.rmhfh.dao.SaleDao">
+	<resultMap id="saleMap" type="cn.rmhfh.entity.Sale">
+		<result column="saleId" property="saleId"/>
+		<result column="salesman" property="salesman"/>
+		<result column="customer" property="customer"/>
+		<result column="totalMoney" property="totalMoney"/>
+		<result column="freight" property="freight"/>
+		<result column="getMoney" property="getMoney"/>
+		<result column="discount" property="discount"/>
+		<result column="time" property="time"/>
+		<result column="status" property="status"/>
+	</resultMap>
+	
+	<resultMap id="stoveMap" type="cn.rmhfh.domain.SaleDetailStoveBO">
+		<result column="stoveId" property="stoveId"/>
+		<result column="type" property="type"/>
+		<result column="model" property="model"/>
+		<result column="num" property="num"/>
+		<result column="sellPrice" property="price"/>
+	</resultMap>
+	
+	<insert id="addSale">
+		INSERT INTO
+			t_sale(saleId,salesman,customer,totalMoney,freight,getMoney,discount,time,status)
+		VALUES(#{sale.saleId},#{sale.salesman},#{sale.customer},#{sale.totalMoney},#{sale.freight},#{sale.getMoney},#{sale.discount},#{sale.time},#{sale.status})	
+	</insert>
+	
+	<select id="getAll" resultMap="saleMap">
+		SELECT
+ 			s.saleId,s.salesman,c.name customer,s.freight,s.totalMoney,s.getMoney,s.discount,s.time,s.status
+ 		FROM 
+ 			t_sale AS s 
+ 		 LEFT JOIN t_customer AS c 
+ 		 ON s.customer=c.customerId
+	</select>
+	
+	<select id="getOne" resultMap="saleMap">
+		SELECT
+			*
+		FROM	
+			t_sale
+		WHERE
+			saleId=#{saleId}	
+	</select>
+	
+	<insert id="addSaleDetail">
+		INSERT INTO
+			t_detailsale(saleId,stoveId,num)
+		VALUES	
+			<foreach item="item" collection="detail" separator=",">
+		    	(#{item.saleId}, #{item.stoveId},#{item.num})
+		  	</foreach>
+	</insert>
+	
+	<select id="getStoveBySaleId" resultMap="stoveMap">
+		SELECT
+			s.stoveId,s.type,s.model,s.sellPrice,d.num
+		FROM 
+			t_detailsale AS d 
+		LEFT JOIN 
+			t_stove AS s  
+		ON 
+			s.stoveId=d.stoveId
+		WHERE
+			d.saleId=#{saleId}
+	</select>
+	
+	<update id="updateMoney">
+		UPDATE
+			t_sale
+		SET
+			getMoney=getMoney+#{money}
+		WHERE
+			saleId=#{saleId}		
+	</update>
+</mapper>    

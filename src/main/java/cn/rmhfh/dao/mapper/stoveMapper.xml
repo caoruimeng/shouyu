@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.rmhfh.dao.StoveDao">
+	
+	<resultMap type="cn.rmhfh.entity.Stove" id="stoveMap">
+		<id property="stoveId" column="stoveId"/>
+		<result property="model" column="model"/>
+		<result property="type" column="type"/>
+		<result property="number" column="number"/>
+		<result property="description" column="description"/>
+		<result property="productionCost" column="productionCost"/>
+		<result property="sellPrice" column="sellPrice"/>
+	</resultMap>
+	
+	<resultMap type="cn.rmhfh.entity.StoveImg" id="imgMap">
+		<id property="imgId" column="imgId"/>
+		<result property="model" column="model"/>
+		<result property="stoveId" column="stoveId"/>
+		<result property="path" column="path"/>
+	</resultMap>
+	
+	<resultMap type="cn.rmhfh.entity.CompriseMaterial" id="compriseMap">
+		<id property="cmId" column="cmId"/>
+		<result property="stoveId" column="stoveId"/>
+		<result property="materialId" column="materialId"/>
+		<result property="number" column="number"/>
+	</resultMap>
+	
+	<resultMap type="cn.rmhfh.domain.CompriseMaterialBO" id="cmBOMap">
+		<id property="cmId" column="cmId"/>
+		<result property="stoveId" column="stoveId"/>
+		<result property="materialId" column="materialId"/>
+		<result property="name" column="name"/>
+		<result property="price" column="price"/>
+		<result property="number" column="number"/>
+		<result property="total" column="total"/>
+	</resultMap>
+	
+	<!-- 添加锅炉基本信息 -->
+	<insert id="addStove">
+		INSERT INTO
+			t_stove(stoveId,model,type,number,description,productionCost,sellPrice)
+		VALUE
+			(#{s.stoveId},#{s.model},#{s.type},#{s.number},
+			#{s.description},#{s.productionCost},#{s.sellPrice})	
+	</insert>
+	
+	<!-- 为锅炉增加配料 -->
+	<insert id="addCompriseMaterial">
+		INSERT INTO
+			t_comprisematerial(stoveId,materialId,number)
+		VALUES
+			<foreach item="item" collection="compriseList" separator=",">
+		    	(#{stoveId}, #{item.materialId},#{item.number})
+		  	</foreach>
+	</insert>
+	
+	
+	<!-- 修改配料信息 -->
+	<update id="updateCompriseMaterial">
+		UPDATE
+			t_comprisematerial
+		SET
+			materialId=#{cm.materialId},number=#{cm.number}
+		WHERE
+			cmId=#{cm.cmId}		
+	</update>
+	
+	<delete id="deleteCompriseMaterial">
+		DELETE FROM
+			t_comprisematerial
+		WHERE
+			cmId=#{cmId}	
+	</delete>
+	
+	<select id="findAllStove" resultMap="stoveMap">
+		SELECT
+			*
+		FROM
+			t_stove		
+	</select>
+	
+	<!-- 根据类型查询 -->
+	<select id="findStoveByType" resultMap="stoveMap">
+		SELECT
+			*
+		FROM
+			t_stove	
+		WHERE
+			type like #{type}		
+	</select>
+	
+	
+	<select id="findOneStove" resultMap="stoveMap">
+		SELECT
+			*
+		FROM
+			t_stove		
+		WHERE
+			stoveId=#{stoveId}	
+	</select>
+	
+	<!-- 根据锅炉Id查询所以配料信息 -->
+	<select id="findCompriseMaterialByStoveId" resultMap="cmBOMap">
+		SELECT
+			cm.cmId,cm.stoveId,m.materialId,m.name,m.price,cm.number,m.price*cm.number as total
+		FROM
+			t_comprisematerial as cm
+		LEFT JOIN
+			t_material as m
+		ON
+			cm.materialId=m.materialId		
+		WHERE
+			cm.stoveId=#{stoveId}
+	</select>
+	
+	
+	<!-- 锅炉入库 -->
+	<update id="inRep">
+		UPDATE
+			t_stove
+		SET
+			number=number+#{number}
+		WHERE
+			stoveId=#{stoveId}	
+	</update>
+	
+	<!-- 锅炉出库 -->
+	<update id="outRep">
+		UPDATE
+			t_stove
+		SET
+			number=number-#{number}
+		WHERE
+			stoveId=#{stoveId}	
+	</update>
+	
+	
+</mapper>    

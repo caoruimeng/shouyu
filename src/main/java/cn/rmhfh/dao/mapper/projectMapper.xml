@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.rmhfh.dao.ProjectDao">
+	<resultMap type="cn.rmhfh.entity.Project" id="projectMap">
+		<id property="proId" column="proId"/>
+		<result property="stoveId" column="stoveId"/>
+		<result property="num" column="num"/>
+		<result property="getNum" column="getNum"/>
+		<result property="beginDate" column="beginDate"/>
+		<result property="endDate" column="endDate"/>
+		<result property="status" column="status"/>		
+	</resultMap>
+	
+	<resultMap type="cn.rmhfh.domain.ProjectBO" id="projectBOMap">
+		<id property="proId" column="proId"/>
+		<result property="stoveId" column="stoveId"/>
+		<result property="model" column="model"/>
+		<result property="type" column="type"/>
+		<result property="num" column="num"/>
+		<result property="getNum" column="getNum"/>
+		<result property="beginDate" column="beginDate"/>
+		<result property="endDate" column="endDate"/>
+		<result property="status" column="status"/>		
+	</resultMap>
+	
+	<select id="getAll" resultMap="projectBOMap">
+		SELECT
+			p.*,s.type,s.model
+		FROM
+			t_project AS p
+		LEFT JOIN
+			t_stove AS s
+		ON
+			p.stoveId=s.stoveId	
+	</select>
+	<insert id="addPro">
+		INSERT INTO
+			t_project(stoveId,num,beginDate)
+		VALUES (#{pro.stoveId},#{pro.num},#{pro.beginDate})	
+	</insert>
+	
+	<select id="findOne" resultMap="projectMap">
+		SELECT
+			*
+		FROM
+			t_project
+		WHERE
+			proId=#{proId}		
+	</select>
+	
+	<update id="getStove">
+		UPDATE
+			t_project
+		SET
+			getNum=getNum+#{num}
+		WHERE
+			proId=#{proId}	
+	</update>
+	
+</mapper>    
